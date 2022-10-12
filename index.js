@@ -33,8 +33,11 @@ async function getinfo() {
 }
 async function displayInformation() {
   let getFunction = await getinfo();
-  console.log(getFunction);
-
+  let getOtherFunction = getFunction.data.holes[0].teeBoxes
+  let displayYards = getFunction.data.holes[0].teeBoxes[0].yards;
+  renderTeeBoxes(getOtherFunction);
+  console.log(displayYards);
+ 
 }
 
 // --------------------------------
@@ -61,7 +64,7 @@ async function getTeeBox() {
 function renderTeeBoxes(teeBoxes) {
   let teeBoxSelectHtml = ''
   teeBoxes.forEach(function (teeBox, index) {
-   teeBoxSelectHtml += `<option value="${index}">${teeBox.teeType.toUpperCase()}, ${teeBox.totalYards} yards</option>`;
+   teeBoxSelectHtml += `<option value="${index}">${teeBox.teeType.toUpperCase()}, ${teeBox.yards} yards</option>`;
 
 });
 

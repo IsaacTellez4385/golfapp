@@ -55,3 +55,30 @@ h1 {
     top:15px;
     left:10px;
 }
+#numberInput {
+    display:none;
+}
+.aside {
+    width:150px;
+    height:900px;
+    background-image: url(images/grass.jpeg);
+    background-size:cover;
+    background-position:center;
+    float:right;
+}
+.otherAside {
+    width:150px;
+    height:900px;
+    background-image: url(images/golf.jpeg);
+    background-size:cover;
+    background-position:right;
+    float:left;
+}
+.h1Ani {
+    animation-name:h1Ani;
+    animation-duration:3s;
+    position:relative;
+}
+@keyframes h1Ani {
+    0%{left:-500px;}
+}

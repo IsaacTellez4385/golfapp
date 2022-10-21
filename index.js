@@ -120,55 +120,84 @@ function addList() {
   let parTotalCount = 0;
   let handicapTotalCount = 0;
   let totalTotalCount = 0;
-  let outTotalCount = 0;
 
   for(let i = 1; i <= splitHoleRow; i++) {
     holeRow += `<th <td >${i}</th>`
 
   }
 
-  holeRow += `<th>Out</th>`
+  holeRow += `<th style="color:green;" >Out</th>`
 
   for(let i = splitHoleRow + 1 ; i <= getYardsLoop.data.holes.length; i++) {
      holeRow += `<th <td >${i}</th>`
  }
- holeRow += `<th>In</th>`
- holeRow += `<th>Total</th`
+ holeRow += `<th style="color:red;">In</th>`
+ holeRow += `<th style="color:orange" >Total</th`
  
   document.querySelector('table').innerHTML = holeRow
 
-  for(let i = 0; i < getYardsLoop.data.holes.length; i++) {
+  //yards ------------------------------------------------------------------------------------------------
+
+  for(let i = 0; i < splitHoleRow; i++) {
     let getYards = getYardsLoop.data.holes[i].teeBoxes[dropDownValue].yards;
     yardsTotalCount += getYards
     totalTotalCount = yardsTotalCount;
     yards += ` <td>${getYards}</td>`
+  }
+  yards += `<th style="color:#056600;" >${yardsTotalCount}</th>`
+  yardsTotalCount = 0;
+  for(let i = splitHoleRow; i < getYardsLoop.data.holes.length; i++) {
+    let getYards = getYardsLoop.data.holes[i].teeBoxes[dropDownValue].yards;
+    yardsTotalCount += getYards
+    yards += ` <td>${getYards}</td>`
 
   }
-  yards += `<td>${yardsTotalCount}</td>`
-  yards += `<td>${totalTotalCount}</td>`
-  for(let i = 0; i < getYardsLoop.data.holes.length; i++) {
+  totalTotalCount += yardsTotalCount;
+  yards += `<th style="color:red;">${yardsTotalCount}</th>`
+  yards += `<th style="color:orange;">${totalTotalCount}</th>`
+  // par ------------------------------------------------------------------------------------------------
+
+  for(let i = 0; i < splitHoleRow; i++) {
     let getPar = getYardsLoop.data.holes[i].teeBoxes[dropDownValue].par;
     parTotalCount += getPar
     totalTotalCount = parTotalCount;
     par += ` <td>${getPar}</td>`
+  }
+  par += `<th style="color:#056600;">${parTotalCount}</th>`
+  parTotalCount = 0;
+  for(let i = splitHoleRow; i < getYardsLoop.data.holes.length; i++) {
+    let getPar = getYardsLoop.data.holes[i].teeBoxes[dropDownValue].par;
+    parTotalCount += getPar
+    par += ` <td>${getPar}</td>`
 
   }
-  par += `<td>${parTotalCount}</td>`
-  par += `<td>${totalTotalCount}</td>`
-  for(let i = 0; i < getYardsLoop.data.holes.length; i++) {
-    let getHandicap = getYardsLoop.data.holes[i].teeBoxes[dropDownValue].hcp;
-    handicapTotalCount += getHandicap
-    totalTotalCount = handicapTotalCount;
-    handicap += ` <td>${getHandicap}</td>`
+  totalTotalCount += parTotalCount;
+  par += `<th style="color:red;">${parTotalCount}</th>`
+  par += `<th style="color:orange;">${totalTotalCount}</th>`
 
-  }
-  handicap += `<td>${handicapTotalCount}</td>`
-  handicap += `<td>${totalTotalCount}</td>`
+  //handicap ------------------------------------------------------------------------------------------------
 
-  for(let i = 1; i >= splitHoleRow.length; i++) {
-    
-  }
+//--
+for(let i = 0; i < splitHoleRow; i++) {
+  let getHandicap = getYardsLoop.data.holes[i].teeBoxes[dropDownValue].hcp;
+  handicapTotalCount += getHandicap
+  totalTotalCount = handicapTotalCount;
+  handicap += ` <td>${getHandicap}</td>`
+}
 
+handicap += `<th style="color:#056600;">${handicapTotalCount}</th>`
+handicapTotalCount = 0;
+
+for(let i = splitHoleRow; i < getYardsLoop.data.holes.length; i++) {
+  let getHandicap = getYardsLoop.data.holes[i].teeBoxes[dropDownValue].hcp;
+  handicapTotalCount += getHandicap
+  handicap += ` <td>${getHandicap}</td>`
+
+}
+totalTotalCount += handicapTotalCount;
+handicap += `<th style="color:red;">${handicapTotalCount}</th>`
+handicap += `<th style="color:orange;">${totalTotalCount}</th>`
+// -------------------------------------------------------
   document.querySelector('table').innerHTML += yards;
   yards += '</tr>'
 
@@ -205,12 +234,19 @@ let addPlayerCounter = 0;
   let namePlayer = `<tr> <th onclick="removePlayer(${addGuy.id})" scope="row">${addGuy.name}</th>`
   let getYardsLoop =  await getinfo()
   playerArray.push(addGuy);
+  let splitHoleRow = getYardsLoop.data.holes.length / 2;
 
-  for(let i = 0; i < getYardsLoop.data.holes.length; i++) {
+  for(let i = 0; i < splitHoleRow; i++) {
+    namePlayer += `<td data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="changeScoreData(${i}, ${addGuy.id}, ${addPlayerCounter})" id="${addGuy.id}playerBox${i}"></td>`
+
+  }
+    namePlayer += `<th style="color:green;" id="${addGuy.id}playerBoxOut">0</th>`
+  for(let i = splitHoleRow; i < getYardsLoop.data.holes.length; i++) {
     namePlayer += `<td data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="changeScoreData(${i}, ${addGuy.id}, ${addPlayerCounter})" id="${addGuy.id}playerBox${i}"></td>`
    
   }
-  namePlayer += `<td id="player-score-${addGuy.id}">0</td>`
+  namePlayer += `<th style="color:red;" id="${addGuy.id}playerBoxIn">0</th>`
+  namePlayer += `<th style="color:orange;" id="player-total-${addGuy.id}">0</th>`
   document.querySelector('table').innerHTML += namePlayer;
   namePlayer += '</tr>'
   addPlayerCounter += 1;
@@ -226,6 +262,8 @@ let addPlayerCounter = 0;
 
   document.getElementById(`${otherVariable}playerBox${whenChanged}`).innerHTML = value;
 
+  updateTotalPlayScore(otherVariable)
+
  }
  let playerArray = [];
 
@@ -239,29 +277,72 @@ let addPlayerCounter = 0;
   playerCounter = otherPlayerCounter;
 
   console.log(whenChanged, otherVariable, playerCounter)
+
+  updateTotalPlayScore(guyId)
  }
 
 
  function updateTotalPlayScore(guyId) {
-  const scoreTotalElement = document.querySelector(`#player-score-${guyId}`);
-  const totalPlayerScore = getTotalPlayerScore(guyId);
+  const scoreTotalElement = document.querySelector(`#player-total-${guyId}`);
+  const outTotalElement = document.querySelector(`[id^="${guyId}playerBoxOut"]`);
+  const inTotalElement = document.querySelector(`[id^="${guyId}playerBoxIn"]`);
+  const totalScore = getTotalPlayerScore(guyId);
+  const isGameFinished = getPlayerScoreElements(guyId).every(x => x.innerHTML.length > 0)
+  const isPerfectGame = isGameFinished && totalScore === 18;
 
-  scoreTotalElement.textContent = totalPlayerScore;
+  scoreTotalElement.textContent =  totalScore;
+  outTotalElement.textContent = getOutScore(guyId);
+  inTotalElement.textContent = getInScore(guyId);
+  
+
+  if (isPerfectGame) {
+    $(function() {
+      toastr.success("You completed the course with a pefect score", "Congratulations", {timeout: 2000})
+    })
+  }
  }
 
  function getTotalPlayerScore(guyId) {
-  const playerScoreElements = Array.from(document.querySelectorAll(`[id^="${guyId}playerBox"]`))
-  let totalPlayerScore = 0;
+  return getInScore(guyId) + getOutScore(guyId)
+
+
+
+ }
+ function getOutScore(guyId) {
+  const playerScoreElements = getPlayerScoreElements(guyId).slice(0, 9);
+  let outPlayerScore = 0;
 
   for(let i =0; i < playerScoreElements.length; i++) {
     const scoreElementItem = playerScoreElements[i]
     const score = Number(scoreElementItem.textContent || 0)
-    totalPlayerScore += score;
+    outPlayerScore += score;
   }
 
-  return totalPlayerScore
+  return outPlayerScore
 
  }
+
+ function getPlayerScoreElements(guyId) {
+  const ignoreIds = [`${guyId}playerBoxOut`, `${guyId}playerBoxIn`];
+  return Array.from(
+    document.querySelectorAll(`[id^="${guyId}playerBox"]`)
+  ).filter(x => !ignoreIds.includes(x.id) )
+ }
+
+ function getInScore(guyId) {
+  const playerScoreElements = getPlayerScoreElements(guyId).slice(9)
+  let inPlayerScore = 0;
+
+  for(let i =0; i < playerScoreElements.length; i++) {
+    const scoreElementItem = playerScoreElements[i]
+    const score = Number(scoreElementItem.textContent || 0)
+    inPlayerScore += score;
+  }
+
+  return inPlayerScore
+
+ }
+
 
 
 

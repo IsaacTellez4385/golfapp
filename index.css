@@ -1,6 +1,10 @@
 * {
     margin:0;
 }
+.body {
+    height:100%;
+    width:100%;
+}
 .table-responsive {
     width:100%;
     position:relative;
